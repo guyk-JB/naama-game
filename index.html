@@ -25,9 +25,14 @@
   window.__showErr=show;
 })();
 </script>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="המשחק של נעמה">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAAC1ElEQVR42u3bMW4TQRSA4fWTk4oD0OUkSNTcIBINR0gBTQrSpAGJ9KkjcQNqJE5AlTodd6AwdYhlpN2NefPe95dIHjwznybxZL358nM3SfsKSyA4BIfgEByCQ3AIDsEhOASHBIfgEByCQ3AIDsEhOFS1rSUYtIvN66f/eLP7vuJ/sfGAcQETz6QEjmosViTid46yMma/Co76Mpa/Fo7KMhaOAEdxGUvGgaO+jNmjwSE4eh8b88aEQ3AIDj9TVhwZDsEhOASH4BAcgkPTcR7SWWtkOASH4PCTZcUx4RAc7Q+PGaPB8ajzy1clfcwbB46/ZdTzMXsEOPacGZV8LHktHPs11PCx8NTxdchDDr5e/5h8VxaLAyUk4lv2iT6Y5PQxuefI8JE1268gcOS6zGjoI8jgA451dreVjyCDj+441t3RJj6CDD6mnvccR9jCwlcgQYYjpB2OY+5ZVR9BBh+NcPyvfarnI8jgowWODHtTyUeQwUdxHNn2o4aP4S/Bkm/D0FdkQYYjpCCOUdZ9XB9BhndbCseIaz3iew6r7J0XwTH6R8Sx3n9YWbMYHkela+lR5jLAJVjhp2mSX5EFGWY3JI4OD/FmnmNYNTMdDEe3Lx7mnG9YKbMeBkdPGTnnHlbHCgyAg4xs65DiEgyLKeUVWZDhCEl6chye/8tPdx0Q/PrwNuf5Ec4M50c6HGTkX6vUf5W9OHnosPc3v88m1+eaPCYoOASH4JDgEByCQ3AIDsEhOASH4BAcEhz6V9tuE758/2bJy68/f3NySHAIDsEhOASH4BAcgkNwCA41bvvi9Crvu9u967AHabfAySE4BIfgEByCQ3AIDsEhOASHBIfgEByCQ3AIDsEhOASH+rW5vf9oFeTkEByCQ3AIDsEhOASH4BAcEhyCQ3AIDsEhOASH4BAcgkOCQ3AIDsEhOASH4BAcgkNwCA4JDsEhOASH4BAcgkMl+gMkk8w5r3ihpgAAAABJRU5ErkJggg==">
 <title>משחק הבית של נעמה</title>
 <style>
 html,body{margin:0;height:100%;overflow:hidden;background:#2b2140;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;font-family:system-ui,"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
@@ -2621,6 +2626,98 @@ function rainbowTrail(x,y){var d=document.createElement('div');d.className='laye
     var iv=setInterval(function(){var k=Math.min(1,(Date.now()-t0)/D),x=x0+(x1-x0)*k,y=y0-Math.sin(k*Math.PI)*70;el.style.left=x+'px';el.style.top=y+'px';rainbowTrail(x+(x1>x0?-40:40),y+10);if(Math.random()<.3)fx(x,y-40,'✨',24);
       if(k>=1){clearInterval(iv);o.x=Math.round(x1);o.y=y0;wsave();el.classList.remove('walk');el._run=0}},45);timers.push(iv);return}
   return _tap(o,el,p)}})();
+</script>
+
+<script>
+/* ===== פארק: קשתות עם חצי וואקום ===== */
+function arrowSVG(){return '<svg viewBox="-70 -14 84 28" width="84" height="28" style="display:block;overflow:visible"><path d="M-66 0 H-4" stroke="#8a5a2b" stroke-width="5" stroke-linecap="round"/><path d="M-66 0 l-8 -9 h10 l8 9 l-8 9 h-10Z" fill="#ff8fd0"/><path d="M-56 0 l-8 -9 h8 l8 9 l-8 9 h-8Z" fill="#4fb3ff"/><path d="M-4 -10 Q8 -10 10 0 Q8 10 -4 10Z" fill="#ff4f5e"/></svg>'}
+SCENES.p_archery=function(){
+  sceneEl.style.background='linear-gradient(#9fdcff,#e2f6ff 62%,#9ad77f 62%,#7cc45f)';
+  tip('קַשְׁתוּת! בּוֹחֲרִים מִי יוֹרֶה, מוֹשְׁכִים אֲחוֹרָה, רוֹאִים לְאָן הַחֵץ יָעוּף, וּמְשַׁחְרְרִים. אֶפְשָׁר גַּם סְתָם לִגַּעַת בַּמָּסָךְ.',700);
+  layer('top:560px;height:65px;background:#6cb04f;pointer-events:none');
+  ['☁️','☁️'].forEach(function(c,i){var d=thing(emo(c,80),300+i*330,150+i*20,{fixed:true});d.style.pointerEvents='none';d.style.opacity=.8});
+  // מטרה
+  var TX=830,TY=330,TR=110,ty=TY,tdir=1,moving=false,hits=0,score=0;
+  var tgt=layer('left:'+(TX-40)+'px;top:'+(TY-TR-10)+'px;width:110px;height:'+(TR*2+150)+'px;pointer-events:none;z-index:30','<svg viewBox="0 0 110 '+(TR*2+150)+'" width="110" height="'+(TR*2+150)+'"><path d="M60 '+(TR*2)+' L30 '+(TR*2+150)+' M60 '+(TR*2)+' L95 '+(TR*2+150)+'" stroke="#8a5a2b" stroke-width="10"/>'+
+    [['#fff',1],['#2b2b38',.84],['#4fb3ff',.66],['#ff4f5e',.46],['#ffd23f',.24]].map(function(r){return '<ellipse cx="40" cy="'+(TR+10)+'" rx="'+(34*r[1])+'" ry="'+(TR*r[1])+'" fill="'+r[0]+'" stroke="#fff" stroke-width="2"/>'}).join('')+'</svg>');
+  var stuck=layer('pointer-events:none;z-index:35');tgt.appendChild(stuck);stuck.style.cssText='position:absolute;left:0;top:0;width:110px;height:'+(TR*2+150)+'px;pointer-events:none';
+  var sc=layer('left:880px;top:30px;width:100px;height:56px;border-radius:28px;background:#fff;font:bold 32px system-ui;text-align:center;line-height:56px;z-index:60;pointer-events:none','⭐0');
+  // הקשת והדמות
+  var who=NAAMA,ch=null,bow=null,AX=200,FY=560,BX=0,BY=0;
+  function place(){if(ch)ch.remove();var k=PEOPLE[who].k*.9;ch=famChar(who,AX,FY,.9,{fixed:true});ch.style.zIndex=40;BX=AX+46*k;BY=FY-98*k;
+    if(!bow){bow=layer('width:60px;height:130px;z-index:45;pointer-events:none;transform-origin:30px 65px','<svg viewBox="0 0 60 130" width="60" height="130" style="overflow:visible"><path d="M20 4 Q62 65 20 126" stroke="#b5651d" stroke-width="8" fill="none" stroke-linecap="round"/><path class="str" d="M20 4 L20 126" stroke="#fff" stroke-width="2.5" fill="none"/><g class="nock" transform="translate(20 65)">'+'<path d="M0 0 H56" stroke="#8a5a2b" stroke-width="5" stroke-linecap="round"/><path d="M0 0 l-8 -9 h10 l8 9 l-8 9 h-10Z" fill="#ff8fd0"/><path d="M52 -10 Q64 -10 66 0 Q64 10 52 10Z" fill="#ff4f5e"/></g></svg>')}
+    bow.style.left=(BX-30)+'px';bow.style.top=(BY-65)+'px'}
+  place();
+  picker(who,function(id){who=id;place();say(PNAMES[id]||'חָבֵר')},40);
+  // מסלול
+  var trail=layer('pointer-events:none;z-index:44');
+  var G=700;
+  function path(vx,vy){var pts=[];for(var t=0;t<2.2;t+=.045){var x=BX+vx*t,y=BY+vy*t+G*t*t/2;pts.push([x,y]);if(y>FY+5||x>TX-25)break}return pts}
+  function showPath(vx,vy){trail.innerHTML='<svg viewBox="0 0 1000 625" width="1000" height="625">'+path(vx,vy).map(function(p,i){return '<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="'+(6-i*.12>2?6-i*.12:2).toFixed(1)+'" fill="#fff" stroke="#ff4f9a" stroke-width="2" opacity="'+(1-i/60).toFixed(2)+'"/>'}).join('')+'</svg>'}
+  function aim(vx,vy,pull){var a=Math.atan2(vy,vx)*180/Math.PI;bow.style.transform='rotate('+a+'deg)';var n=bow.querySelector('.nock'),s=bow.querySelector('.str');n.setAttribute('transform','translate('+(20-pull)+' 65)');s.setAttribute('d','M20 4 L'+(20-pull)+' 65 L20 126')}
+  function rest(){bow.style.transform='';bow.querySelector('.nock').setAttribute('transform','translate(20 65)');bow.querySelector('.str').setAttribute('d','M20 4 L20 126');trail.innerHTML=''}
+  var flying=false;
+  function shoot(vx,vy){if(flying)return;flying=true;rest();bow.querySelector('.nock').style.opacity=0;trail.innerHTML='';
+    tone(900,.12,{type:'triangle',to:300,v:.15});noise(.15,{f:2500,v:.08});
+    var ar=layer('width:84px;height:28px;z-index:46;pointer-events:none;transform-origin:70px 14px','<div style="position:absolute;left:0;top:0">'+arrowSVG()+'</div>');
+    var t0=performance.now(),last=0;
+    (function step(){var t=(performance.now()-t0)/1000,x=BX+vx*t,y=BY+vy*t+G*t*t/2,ang=Math.atan2(vy+G*t,vx)*180/Math.PI;
+      ar.style.left=(x-70)+'px';ar.style.top=(y-14)+'px';ar.style.transform='rotate('+ang+'deg)';
+      if(x>=TX-22&&x<=TX+40){var dy=y-ty;if(Math.abs(dy)<=TR){hit(ar,dy,ang);return}}
+      if(y>FY+10||x>1040||t>4){miss(ar,x,ang);return}
+      requestAnimationFrame(step)})();
+  }
+  function done(){flying=false;bow.querySelector('.nock').style.opacity=1}
+  function hit(ar,dy,ang){ar.remove();
+    var r=Math.abs(dy)/TR,pts=r<.24?5:r<.46?3:r<.66?2:1;score+=pts;hits++;sc.textContent='⭐'+score;
+    var st=document.createElement('div');st.style.cssText='position:absolute;left:'+(40-62)+'px;top:'+(TR+10+dy-14)+'px;width:84px;height:28px;transform-origin:62px 14px;transform:rotate('+ang+'deg)';st.innerHTML=arrowSVG().replace('viewBox="-70 -14 84 28"','viewBox="-62 -14 84 28"');stuck.appendChild(st);
+    while(stuck.children.length>7)stuck.removeChild(stuck.firstChild);
+    tone(220,.18,{type:'sine',to:520,v:.2});setTimeout(function(){tone(700,.06,{type:'square',lp:1500,v:.06})},90);
+    anim(tgt,'shake');
+    var p={x:TX,y:ty+dy};
+    if(pts===5){sfx.chime();say(rnd(['בּוּל בָּאֶמְצַע!','בּוּל!','מְעֻלֶּה! בְּדִיּוּק בָּאֶמְצַע!']));for(var i=0;i<10;i++)fx(p.x-60+Math.random()*120,p.y-60+Math.random()*100,rnd(['⭐','🎉','✨']),40)}
+    else{sfx.pop();say(rnd(['פְּגִיעָה!','יֹפִי!','כָּל הַכָּבוֹד!']));fx(p.x,p.y-30,'⭐',40)}
+    if(score>=15&&!moving){moving=true;later(function(){say('עַכְשָׁו הַמַּטָּרָה זָזָה! נַסִּי לִפְגֹּעַ בָּהּ!')},1400)}
+    later(done,500)}
+  function miss(ar,x,ang){sfx.boing();say(rnd(['כִּמְעַט!','עוֹד פַּעַם!','נַסִּי שׁוּב!']));ar.style.transition='opacity 1s';ar.style.opacity=0;setTimeout(function(){ar.remove()},1100);later(done,500)}
+  // תנועת המטרה אחרי 15 נקודות
+  every(function(){if(!moving)return;ty+=tdir*2;if(ty>TY+110||ty<TY-130)tdir*=-1;tgt.style.top=(ty-TR-10)+'px'},30);
+  // משיכה ושחרור
+  var pad=layer('top:110px;z-index:50;touch-action:none;cursor:crosshair'),drag=null;
+  pad.addEventListener('pointerdown',function(e){ac();if(flying)return;var p=toStage(e);drag={x:p.x,y:p.y,vx:0,vy:0,moved:false};try{pad.setPointerCapture(e.pointerId)}catch(_){}tone(300,.15,{type:'triangle',to:420,v:.06})});
+  pad.addEventListener('pointermove',function(e){if(!drag)return;var p=toStage(e),dx=p.x-drag.x,dy=p.y-drag.y,d=Math.hypot(dx,dy);if(d<12)return;drag.moved=true;
+    var pull=Math.min(d,170),k=pull/d;dx*=k;dy*=k;drag.vx=-dx*5.4;drag.vy=-dy*5.4;if(drag.vx<60)drag.vx=60;aim(drag.vx,drag.vy,pull/6);showPath(drag.vx,drag.vy)});
+  function up(){if(!drag)return;var d=drag;drag=null;
+    if(!d.moved){var t=0.9+Math.random()*.25,vx=(TX-BX)/t,vy=(ty-BY+(Math.random()*120-60)-G*t*t/2)/t;aim(vx,vy,18);showPath(vx,vy);later(function(){shoot(vx,vy)},500);return}
+    shoot(d.vx,d.vy)}
+  pad.addEventListener('pointerup',up);pad.addEventListener('pointercancel',up);
+};
+THEMES.p_archery=THEMES.park;
+(function(){var _p=SCENES.park;SCENES.park=function(){_p();
+  var d=document.createElement('div');d.className='tile';d.textContent='🏹';d.style.cssText+='width:130px;height:130px;font-size:72px;background:#ffb38a;left:475px;top:322px;animation-delay:1.75s';
+  d.addEventListener('click',function(){ac();sfx.pop();say('קַשְׁתוּת');go('p_archery')});sceneEl.appendChild(d)}})();
+</script>
+
+<script>
+/* ===== מסך מלא ===== */
+function fsOn(){return !!(document.fullscreenElement||document.webkitFullscreenElement)}
+function fsCan(){var e=document.documentElement;return !!(e.requestFullscreen||e.webkitRequestFullscreen)}
+function fsStandalone(){return window.navigator.standalone===true||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)}
+function fsToggle(){var e=document.documentElement;
+  if(fsOn()){(document.exitFullscreen||document.webkitExitFullscreen).call(document);return}
+  if(fsCan()){try{var r=(e.requestFullscreen||e.webkitRequestFullscreen).call(e);if(r&&r.catch)r.catch(fsHelp)}catch(_){fsHelp()}return}
+  fsHelp();
+}
+function fsHelp(){
+  var ov=document.createElement('div');ov.className='layer';ov.style.cssText='background:rgba(20,15,50,.88);z-index:99000;display:flex;align-items:center;justify-content:center;direction:rtl';
+  ov.innerHTML='<div style="background:#fff;border-radius:28px;padding:26px 34px;max-width:620px;font:24px/1.6 system-ui;color:#333;text-align:right"><div style="font-size:30px;font-weight:bold;margin-bottom:10px">מסך מלא באייפון</div>באייפון אי אפשר להגדיל דף אינטרנט למסך מלא. במקום זה מוסיפים את המשחק למסך הבית, והוא נפתח מלא כמו אפליקציה:<br>1. לוחצים על כפתור השיתוף <span style="font-size:30px">⬆️</span> בספארי.<br>2. בוחרים <b>הוספה למסך הבית</b>.<br>3. פותחים את המשחק מהאייקון החדש.<div style="text-align:center;margin-top:16px;font-size:40px">👍</div></div>';
+  ov.addEventListener('click',function(){ov.remove()});sceneEl.appendChild(ov);
+}
+document.addEventListener('fullscreenchange',function(){setTimeout(fit,100)});document.addEventListener('webkitfullscreenchange',function(){setTimeout(fit,100)});
+(function(){var _m=SCENES.menu;SCENES.menu=function(){_m();if(fsStandalone())return;
+  var b=document.createElement('div');b.className='btn';b.style.cssText+='left:950px;top:50px;width:62px;height:62px;z-index:9000';
+  b.innerHTML='<svg viewBox="0 0 40 40" width="34" height="34"><path d="M4 14 V4 H14 M26 4 H36 V14 M36 26 V36 H26 M14 36 H4 V26" stroke="#7b4fd6" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  b.addEventListener('click',function(){ac();sfx.pop();fsToggle()});sceneEl.appendChild(b)}})();
 </script>
 
 <script>
