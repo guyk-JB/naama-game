@@ -2046,7 +2046,7 @@ function underBG(id,deep){
   layer('height:480px;pointer-events:none;background:repeating-linear-gradient(100deg,rgba(255,255,255,.12) 0 46px,transparent 46px 150px);-webkit-mask-image:linear-gradient(#000,transparent);mask-image:linear-gradient(#000,transparent)');
   layer('top:505px;background:'+(deep?'#c9b07a':'#f2d49b')+';border-radius:50% 50% 0 0/26px 26px 0 0');
   [60,190,330,610,720,960].forEach(function(x,i){layer('left:'+(x-25)+'px;top:'+(330+(i%3)*30)+'px;width:50px;height:'+(200-(i%3)*30)+'px;pointer-events:none;transform-origin:bottom;animation:sway '+(2.5+i*.3)+'s ease-in-out infinite alternate','<svg viewBox="0 0 50 200" width="50" height="100%" preserveAspectRatio="none"><path d="M25 200 Q5 160 25 120 Q45 80 25 40 Q12 15 25 0" stroke="'+(i%2?'#2fa35a':'#43c06f')+'" stroke-width="12" fill="none" stroke-linecap="round"/></svg>')});
-  every(function(){var b=document.createElement('div');b.className='bub';var sz=8+Math.random()*16;b.style.cssText='left:'+(Math.random()*1000)+'px;top:560px;width:'+sz+'px;height:'+sz+'px';sceneEl.appendChild(b);setTimeout(function(){b.remove()},4000)},400);
+  every(function(){var b=document.createElement('div');b.className='bub';var sz=8+Math.random()*16;b.style.cssText='left:'+(Math.random()*1000)+'px;top:560px;width:'+sz+'px;height:'+sz+'px';sceneEl.appendChild(b);setTimeout(function(){b.remove()},4000)},750);
   wander(id,[70,930,90,480],150,true);
 }
 defPlace('under',{music:'sea',water:true,street:true,right:'deep',tip:'צָלַלְנוּ! אֶפְשָׁר לְהַאֲכִיל אֶת הַדָּגִים, לִפְתֹּחַ אֶת תֵּבַת הָאוֹצָר, וְלָשׁוּט בַּצּוֹלֶלֶת. הַחֵץ לְמַעְלָה מַחְזִיר לַחוֹף.',
@@ -2182,7 +2182,7 @@ function landAnim(){
 (function(){var _drop=dropObj;dropObj=function(o,el,p){_drop(o,el,p);var d=PL[CUR_PLACE];
   if(d&&d.lowg&&el.isConnected&&(o.k==='p'||o.k==='dog'||o.k==='it')&&o.place===CUR_PLACE&&!o.seat){var g=d.ground;var target=o.k==='p'?footY(o,g):g-(o.k==='dog'?30:(o.s||60)/2);if(o.y<target-10){o.y=Math.round(target);wsave();el.style.transition='top 2.6s cubic-bezier(.3,.1,.4,1)';el.style.top=o.y+'px';setTimeout(function(){el.style.transition=''},2700)}}}})();
 
-function spaceSky(id,col){layer('background:'+col);for(var i=0;i<60;i++){var st=document.createElement('div');st.className='star';var z=1+Math.random()*3;st.style.cssText='left:'+(Math.random()*1000)+'px;top:'+(Math.random()*380)+'px;width:'+z+'px;height:'+z+'px;animation-delay:'+(Math.random()*3)+'s';sceneEl.appendChild(st)}}
+function spaceSky(id,col){layer('background:'+col);for(var i=0;i<36;i++){var st=document.createElement('div');st.className='star';var z=1+Math.random()*3;st.style.cssText='left:'+(Math.random()*1000)+'px;top:'+(Math.random()*380)+'px;width:'+z+'px;height:'+z+'px;animation-delay:'+(Math.random()*3)+'s';sceneEl.appendChild(st)}}
 
 defPlace('pad',{music:'space',land:[500,330],tip:'מִגְרַשׁ הַשִּׁגּוּר! תַּכְנִיסִי חֲבֵרִים לַטִּיל, וְתִלְחֲצִי עַל הַכַּפְתּוֹר הָאָדֹם כְּדֵי לָטוּס לַחָלָל.',
   seed:function(){newObj({k:'car',rocket:true,x:500,y:330,place:'pad',pass:[]})},
@@ -2794,6 +2794,75 @@ function wearCostume(q,t){var c=PEOPLE[q.ref].c,C=COSTUME[t];
       else{sfx.click()}});
   };
 })();
+</script>
+
+<script>
+/* ===== סבב מהירות ===== */
+(function(){
+  // 1. מצמוץ וזנב: במקום הנפשה רציפה בתוך ה-SVG (ציור מחדש של כל הדמות בכל פריים) — הבזק קצר מדי פעם
+  var st=document.createElement('style');
+  st.textContent='.eyes{animation:none!important}.blinknow .eyes{animation:blink .35s ease!important}@keyframes blink{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.1)}}'+
+    '.tail{animation:none!important}.wagnow .tail{animation:wag .3s ease-in-out 4 alternate!important}'+
+    '.thing.dragging .in{filter:none!important}'+
+    '.thing.walk{transition:none!important}';
+  document.head.appendChild(st);
+  setInterval(function(){if(document.hidden||!sceneEl)return;
+    var ts=sceneEl.querySelectorAll('.thing');var n=0;
+    for(var i=0;i<ts.length&&n<3;i++){var t=ts[i];if(t.querySelector('.eyes')&&Math.random()<.35){n++;(function(t){t.classList.add('blinknow');setTimeout(function(){t.classList.remove('blinknow')},400)})(t)}
+      else if(t.querySelector('.tail')&&Math.random()<.3){(function(t){t.classList.add('wagnow');setTimeout(function(){t.classList.remove('wagnow')},1300)})(t)}}
+  },1500);
+  // 2. גרירה: עדכון מיקום פעם אחת בכל פריים במקום בכל תזוזת אצבע
+  var raf=null,pend=null;
+  window.addEventListener('pointermove',function(e){var d=drags[e.pointerId];if(!d)return;e.stopImmediatePropagation();
+    pend={id:e.pointerId,x:e.clientX,y:e.clientY};if(raf)return;
+    raf=requestAnimationFrame(function(){raf=null;var q=pend;pend=null;if(!q)return;var d=drags[q.id];if(!d)return;
+      var p=toStage({clientX:q.x,clientY:q.y});if(!d.moved&&dist(p,{x:d.sx,y:d.sy})>8)d.moved=true;
+      var x=clamp(p.x-d.dx,10,W-10),y=clamp(p.y-d.dy,10,H-10);d.el.style.left=x+'px';d.el.style.top=y+'px';
+      if(d.opts.onMove)d.opts.onMove(d.el,{x:x,y:y},p)});
+  },true);
+  // לפני שחרור — לוודא שהמיקום האחרון נכתב
+  function flush(e){var d=drags[e.pointerId];if(!d)return;if(raf){cancelAnimationFrame(raf);raf=null}
+    var p=toStage(e);if(!d.moved&&dist(p,{x:d.sx,y:d.sy})>8)d.moved=true;if(d.moved){var x=clamp(p.x-d.dx,10,W-10),y=clamp(p.y-d.dy,10,H-10);d.el.style.left=x+'px';d.el.style.top=y+'px'}pend=null}
+  window.addEventListener('pointerup',flush,true);window.addEventListener('pointercancel',flush,true);
+  // 3. הגבלת ניצוצות ובועות על המסך בבת אחת
+  var _fx=fx;fx=function(x,y,t,s){if(sceneEl&&sceneEl.querySelectorAll('.fx').length>24)return;_fx(x,y,t,s)};
+  var _ap=Element.prototype.appendChild;
+  // 4. שמירת ציורי דמויות שכבר חושבו (תספורות מתולתלות כבדות לחישוב)
+  var cache={},keys=[];var _cs=charSVG;charSVG=function(c,w,crop){var k;try{k=JSON.stringify(c)+'|'+w+'|'+(crop?1:0)}catch(e){return _cs(c,w,crop)}
+    if(cache[k])return cache[k];var r=_cs(c,w,crop);cache[k]=r;keys.push(k);if(keys.length>160)delete cache[keys.shift()];return r};
+})();
+// 5. חיות מסתובבות: תנועה עם translate (מואץ בכרטיס הגרפי) במקום left/top
+function wander(id,b,amp,swim){
+  every(function(){if(document.hidden)return;
+    Object.keys(ELS).forEach(function(k){var el=ELS[k],o=el&&el._o;if(!el||!el.isConnected||!o||o.k!=='it'||!ANIMAL_INFO[o.t]||el._dragging||el._run||Math.random()<.5)return;
+      var ox=o.x,oy=o.y,nx=clamp(o.x+(Math.random()*2-1)*amp,b[0],b[1]),ny=swim?clamp(o.y+(Math.random()*2-1)*amp*.5,b[2],b[3]):clamp(o.y+(Math.random()*2-1)*amp*.25,b[2],b[3]);
+      var f=el.querySelector('.flip');if(f)f.style.transform=nx>ox?'scaleX(-1)':'';
+      o.x=Math.round(nx);o.y=Math.round(ny);
+      el.style.transition='translate 1.6s ease-in-out';el.style.translate=(o.x-ox)+'px '+(o.y-oy)+'px';el._walkT=setTimeout(function(){el.style.transition='none';el.style.left=o.x+'px';el.style.top=o.y+'px';el.style.translate='';el.style.zIndex=o.y},1650);
+    });wsave();
+  },2600);
+}
+// גרירה באמצע הליכה: קובעים מיד את המיקום הסופי כדי שלא תהיה קפיצה
+document.addEventListener('pointerdown',function(e){var t=e.target.closest&&e.target.closest('.thing');if(t&&t.style.translate){clearTimeout(t._walkT);t.style.transition='none';if(t._o){t.style.left=t._o.x+'px';t.style.top=t._o.y+'px'}t.style.translate=''}},true);
+</script>
+
+<script>
+/* ===== חיות בגוף מלא גם באמוג'י של אפל: זברה, ג'ירפה, סוס ===== */
+ALIAS['🐴']='🐎';
+ASVG['🦓']=function(s){var legs=[36,50,80,94].map(function(x){return '<rect x="'+(x-6)+'" y="58" width="12" height="36" rx="5" fill="#fff" stroke="#333" stroke-width="2"/><path d="M'+(x-6)+' 70 h12 M'+(x-6)+' 80 h12" stroke="#222" stroke-width="3"/><rect x="'+(x-6)+'" y="88" width="12" height="7" rx="3" fill="#222"/>'}).join('');
+  return asv(s,'<path d="M98 50 Q114 56 110 76" stroke="#222" stroke-width="4" fill="none"/><path d="M108 72 l6 10 l-8 -2Z" fill="#222"/>'+legs+
+  '<ellipse cx="66" cy="54" rx="36" ry="20" fill="#fff" stroke="#333" stroke-width="2"/>'+[46,56,66,76,86].map(function(x){return '<path d="M'+x+' 36 Q'+(x+4)+' 54 '+x+' 72" stroke="#222" stroke-width="5" fill="none"/>'}).join('')+
+  '<path d="M40 48 Q28 30 26 16 L42 12 Q46 30 52 44Z" fill="#fff" stroke="#333" stroke-width="2"/><path d="M30 26 h12 M32 34 h12" stroke="#222" stroke-width="4"/>'+
+  '<ellipse cx="20" cy="20" rx="16" ry="11" fill="#fff" stroke="#333" stroke-width="2"/><ellipse cx="8" cy="24" rx="7" ry="6" fill="#333"/><circle cx="20" cy="16" r="3" fill="#222"/><path d="M28 4 L32 -6 L36 6Z" fill="#fff" stroke="#333" stroke-width="2"/>'+
+  '<path d="M30 6 Q44 4 48 20 Q50 30 54 40" stroke="#222" stroke-width="7" fill="none" stroke-linecap="round" stroke-dasharray="4 3"/>')};
+ASVG['🦒']=function(s){var legs=[48,58,82,92].map(function(x){return '<rect x="'+(x-5)+'" y="62" width="10" height="34" rx="4" fill="#f4b942"/><rect x="'+(x-5)+'" y="90" width="10" height="6" rx="3" fill="#7a4b2a"/>'}).join('');
+  return '<svg viewBox="0 -40 120 140" width="'+Math.round(s*1.05)+'" height="'+Math.round(s*1.22)+'" style="display:block;overflow:visible">'+legs+
+  '<path d="M100 54 Q114 58 110 74" stroke="#c98a2e" stroke-width="4" fill="none"/>'+
+  '<ellipse cx="72" cy="56" rx="30" ry="17" fill="#f4b942"/><path d="M48 52 L30 0 Q28 -10 36 -10 L44 -8 L60 46Z" fill="#f4b942"/>'+
+  [[66,52,6],[80,58,5],[58,60,5],[88,48,4],[44,30,4],[38,10,4],[50,40,4],[74,44,4]].map(function(p){return '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="'+p[2]+'" fill="#b5651d"/>'}).join('')+
+  '<ellipse cx="26" cy="-14" rx="16" ry="10" fill="#f4b942"/><ellipse cx="13" cy="-11" rx="6" ry="5" fill="#e0a240"/><circle cx="25" cy="-17" r="2.8" fill="#222"/>'+
+  '<path d="M30 -24 V-34 M38 -22 V-32" stroke="#b5651d" stroke-width="3"/><circle cx="30" cy="-35" r="3" fill="#7a4b2a"/><circle cx="38" cy="-33" r="3" fill="#7a4b2a"/><path d="M40 -18 l8 -4 l-2 7Z" fill="#f4b942"/>'+
+  '<path d="M40 -6 Q46 20 56 44" stroke="#b5651d" stroke-width="4" fill="none" stroke-dasharray="3 3"/></svg>'};
 </script>
 
 <script>
