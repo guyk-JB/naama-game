@@ -2705,12 +2705,15 @@ function fsCan(){var e=document.documentElement;return !!(e.requestFullscreen||e
 function fsStandalone(){return window.navigator.standalone===true||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)}
 function fsToggle(){var e=document.documentElement;
   if(fsOn()){(document.exitFullscreen||document.webkitExitFullscreen).call(document);return}
-  if(fsCan()){try{var r=(e.requestFullscreen||e.webkitRequestFullscreen).call(e);if(r&&r.catch)r.catch(fsHelp)}catch(_){fsHelp()}return}
+  var inFrame=false;try{inFrame=window.top!==window.self}catch(_){inFrame=true}
+  if(inFrame){fsHelp('frame');return}
+  if(fsCan()){var done=false;try{var r=(e.requestFullscreen||e.webkitRequestFullscreen).call(e);if(r&&r.then)r.then(function(){done=true},function(){fsHelp()});else setTimeout(function(){if(!fsOn())fsHelp()},700)}catch(_){fsHelp()}return}
   fsHelp();
 }
-function fsHelp(){
+function fsHelp(kind){
+  var ipad=/iPad/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
   var ov=document.createElement('div');ov.className='layer';ov.style.cssText='background:rgba(20,15,50,.88);z-index:99000;display:flex;align-items:center;justify-content:center;direction:rtl';
-  ov.innerHTML='<div style="background:#fff;border-radius:28px;padding:26px 34px;max-width:620px;font:24px/1.6 system-ui;color:#333;text-align:right"><div style="font-size:30px;font-weight:bold;margin-bottom:10px">מסך מלא באייפון</div>באייפון אי אפשר להגדיל דף אינטרנט למסך מלא. במקום זה מוסיפים את המשחק למסך הבית, והוא נפתח מלא כמו אפליקציה:<br>1. לוחצים על כפתור השיתוף <span style="font-size:30px">⬆️</span> בספארי.<br>2. בוחרים <b>הוספה למסך הבית</b>.<br>3. פותחים את המשחק מהאייקון החדש.<div style="text-align:center;margin-top:16px;font-size:40px">👍</div></div>';
+  ov.innerHTML='<div style="background:#fff;border-radius:28px;padding:26px 34px;max-width:620px;font:24px/1.6 system-ui;color:#333;text-align:right"><div style="font-size:30px;font-weight:bold;margin-bottom:10px">מסך מלא</div>'+(kind==='frame'?'כאן המשחק פתוח בתוך דף אחר, ולכן אי אפשר להגדיל אותו. פתחו את הקישור guyk-jb.github.io/naama-game בספארי, או הוסיפו אותו למסך הבית:<br>':(ipad?'הדפדפן לא אישר מסך מלא. הדרך הבטוחה באייפד: מוסיפים את המשחק למסך הבית, והוא נפתח מלא כמו אפליקציה:<br>':'באייפון אי אפשר להגדיל דף אינטרנט למסך מלא. במקום זה מוסיפים את המשחק למסך הבית, והוא נפתח מלא כמו אפליקציה:<br>'))+'1. לוחצים על כפתור השיתוף <span style="font-size:30px">⬆️</span> בספארי.<br>2. בוחרים <b>הוספה למסך הבית</b>.<br>3. פותחים את המשחק מהאייקון החדש.<div style="text-align:center;margin-top:16px;font-size:40px">👍</div></div>';
   ov.addEventListener('click',function(){ov.remove()});sceneEl.appendChild(ov);
 }
 document.addEventListener('fullscreenchange',function(){setTimeout(fit,100)});document.addEventListener('webkitfullscreenchange',function(){setTimeout(fit,100)});
@@ -2738,6 +2741,59 @@ function voicePanel(){
 (function(){var t=null;document.addEventListener('pointerdown',function(e){var m=e.target.closest&&e.target.closest('#mute');if(!m)return;t=setTimeout(function(){t=null;m._long=true;voicePanel()},1500)},true);
   ['pointerup','pointercancel','pointerleave'].forEach(function(n){document.addEventListener(n,function(){if(t){clearTimeout(t);t=null}},true)});
   document.addEventListener('click',function(e){var m=e.target.closest&&e.target.closest('#mute');if(m&&m._long){m._long=false;e.stopPropagation();e.preventDefault()}},true);})();
+</script>
+
+<script>
+/* ===== קימה מכסא/מיטה/אמבטיה: גרירה מתוך מקום ישיבה לאותו מקום = קמים ===== */
+(function(){
+  function featAt(d,x,y){var fs=d&&d.features||[];for(var i=0;i<fs.length;i++){if(inR({x:x,y:y},fs[i].r,12))return i}return -1}
+  var _drop=dropObj;dropObj=function(o,el,p){
+    var d=PL[CUR_PLACE],busy=(o.k==='p'||o.k==='dog')&&(o.seat||o.sleep||o.bath||o.swing||o.ride);
+    var before=busy?featAt(d,o.x,o.y):-1,ox=o.x,oy=o.y;
+    _drop(o,el,p);
+    if(!busy||!el.isConnected||o.place!==CUR_PLACE)return;
+    var still=o.seat||o.sleep||o.bath||o.swing||o.ride;
+    // אותו מקום בדיוק (נגררה ושוחררה על אותו כסא/מיטה) — מקימים אותה לידו
+    if(still&&before>=0&&featAt(d,o.x,o.y)===before){
+      clearState(o);var fl=(d&&d.floor)||510;var nx=clamp(p.x+(p.x>=ox?70:-70),110,890);
+      o.x=Math.round(nx);o.y=o.k==='p'?Math.round(footY(o,fl)):fl-30;
+      el.style.transition='left .25s,top .25s';el.style.left=o.x+'px';el.style.top=o.y+'px';setTimeout(function(){el.style.transition=''},270);
+      el.style.zIndex=Math.round(o.y)+100;applyState(o,el);wsave();sfx.pop();
+    }
+  };
+})();
+</script>
+
+<script>
+/* ===== ארגז התחפושות בגן: נפתח בנגיעה ומוציא תחפושות לגרירה ===== */
+var COSTUME={'🧢':{hat:'cap'},'🎀':{hat:'bow'},'🌸':{hat:'flower'},'🧶':{hat:'beanie'},'👸':{hat:'crown'},'🕶️':{gl:'sun'},'👓':{gl:'round'},'💖':{gl:'heart'},'🎭':{rand:1},'🧽':{clear:1}};
+function wearCostume(q,t){var c=PEOPLE[q.ref].c,C=COSTUME[t];
+  if(C.rand){c.hat=rnd(['crown','cap','beanie','flower','bow']);c.hcol=rnd(COLORS.slice(0,6));c.gl=rnd(['','round','heart','sun'])}
+  else if(C.clear){c.hat=q.ref===NAAMA?'clip':'';c.gl=''}
+  else{if(C.hat){c.hat=C.hat;c.hcol=rnd(COLORS.slice(0,6))}if(C.gl){c.gl=C.gl;c.gcol=C.gl==='heart'?'#ff4f7b':'#333'}}
+  save();
+  Object.keys(ELS).forEach(function(k){var e=ELS[k];if(e.isConnected&&e._o&&e._o.k==='p'&&e._o.ref===q.ref&&e._c){e._c.hat=c.hat;e._c.hcol=c.hcol;e._c.gl=c.gl;e._c.gcol=c.gcol;e.render();anim(e,'jump')}});
+}
+(function(){
+  var _drop=dropObj;dropObj=function(o,el,p){
+    if(o.k==='it'&&COSTUME[o.t]&&!exitAt(p)){
+      for(var id in ELS){var t=ELS[id],q=t._o;if(!t.isConnected||!q||q.k!=='p')continue;var qp=pos(t);
+        if(dist(p,qp)<70*pK(q)+30){wearCostume(q,o.t);sfx.sparkle();for(var i=0;i<5;i++)fx(qp.x-40+Math.random()*80,qp.y-90+Math.random()*60,'✨',32);say(rnd(['אֵיזוֹ תַּחְפֹּשֶׂת יָפָה!','וָואוּ, אֵיזֶה יֹפִי!','מַתְאִים לְךָ מְאוֹד!']));
+          delete WORLD.objs[o.id];el.remove();delete ELS[o.id];wsave();return}}
+    }
+    return _drop(o,el,p);
+  };
+  var _bg=PL.kinder.bg;PL.kinder.bg=function(id){_bg(id);
+    PL.kinder.tip='הַגַּן! אֶפְשָׁר לִבְנוֹת בְּקֻבִּיּוֹת, לְצַיֵּר עַל הַלּוּחַ, וְלִפְתֹּחַ אֶת אַרְגַּז הַתַּחְפּוֹשׂוֹת: נוֹגְעִים בָּאַרְגָּז, וְגוֹרְרִים תַּחְפֹּשֶׂת עַל מִישֶׁהוּ.';
+    var lid=layer('left:174px;top:318px;width:172px;height:28px;z-index:301;pointer-events:none;transform-origin:8px 24px;transition:transform .35s','<svg viewBox="0 0 172 28" width="172" height="28"><rect x="0" y="0" width="172" height="26" rx="10" fill="#7b3fe0" stroke="#fff" stroke-width="3"/><text x="86" y="21" font-size="18" text-anchor="middle">⭐🎭⭐</text></svg>');
+    var hit=layer('left:180px;top:310px;width:160px;height:130px;z-index:302;cursor:pointer');var open=false;
+    hit.addEventListener('click',function(){ac();open=!open;lid.style.transform=open?'rotate(-75deg)':'';
+      if(open){sfx.boing();say('אַרְגַּז הַתַּחְפּוֹשׂוֹת! גִּרְרִי תַּחְפֹּשֶׂת עַל מִישֶׁהוּ.');
+        var have={};Object.keys(WORLD.objs).forEach(function(k){var q=WORLD.objs[k];if(q.place===id&&COSTUME[q.t])have[q.t]=1});
+        Object.keys(COSTUME).filter(function(t){return !have[t]}).forEach(function(t,i){later(function(){var o=newObj({k:'it',t:t,x:150+i*48,y:250-(i%2)*40,s:50,place:id});var e=renderObj(o);e.style.zIndex=600;anim(e,'bounce');sfx.pop()},i*110)})}
+      else{sfx.click()}});
+  };
+})();
 </script>
 
 <script>
