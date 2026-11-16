@@ -3381,6 +3381,77 @@ PL.h_kitchen.right='h_laundry';
 </script>
 
 <script>
+/* ===== קופת חולים כללית: שלט ודגל, מיטת בדיקה לשכיבה, פינת משחקים ===== */
+FAC.clinic=function(x){var w=290,h=260,g='<rect x="0" y="40" width="'+w+'" height="'+(h-40)+'" fill="#ffffff" stroke="#cfe8f5" stroke-width="4"/><rect x="-8" y="26" width="'+(w+16)+'" height="22" rx="6" fill="#1e88e5"/>';
+  g+='<rect x="'+(w/2-115)+'" y="-34" width="230" height="56" rx="16" fill="#fff" stroke="#1e88e5" stroke-width="5"/><text x="'+(w/2)+'" y="4" font-size="24" font-weight="bold" fill="#1e88e5" text-anchor="middle" font-family="Arial" direction="rtl">הָעֲבוֹדָה שֶׁל אִמָּא</text>';
+  g+='<rect x="20" y="58" width="'+(w-40)+'" height="42" rx="10" fill="#fff" stroke="#43a047" stroke-width="4"/><text x="'+(w/2)+'" y="88" font-size="23" font-weight="bold" fill="#1e88e5" text-anchor="middle" font-family="Arial" direction="rtl">קֻפַּת חוֹלִים כְּלָלִית</text>';
+  g+='<rect x="'+(w-14)+'" y="-70" width="6" height="140" fill="#9aa6bd"/><rect x="'+(w-8)+'" y="-68" width="70" height="17" fill="#43a047"/><rect x="'+(w-8)+'" y="-51" width="70" height="17" fill="#ffffff"/><rect x="'+(w-8)+'" y="-34" width="70" height="17" fill="#1e88e5"/>';
+  [[30,112],[w-100,112]].forEach(function(p){g+='<rect x="'+p[0]+'" y="'+p[1]+'" width="70" height="56" rx="6" fill="#bfe9ff" stroke="#9fd0e0" stroke-width="3"/>'});
+  fsvg(x,w,h,g)};
+PL.st_6.tip='כָּאן יֵשׁ אֶת הָעֲבוֹדָה שֶׁל אִמָּא, קֻפַּת חוֹלִים כְּלָלִית, אֶת סִפְרִיַּת הָאוֹתִיּוֹת, וְאֶת הָעֲבוֹדָה שֶׁל אַבָּא, עִם חָצֵר וּמֶלְגֵּזָה!';
+/* שלט ודגל גם בחדר ההמתנה */
+(function(){var _bg=PL.cl_wait.bg;PL.cl_wait.bg=function(id){_bg(id);
+  layer('left:600px;top:150px;width:260px;height:44px;border-radius:12px;background:#fff;border:4px solid #43a047;font:bold 24px Arial;color:#1e88e5;text-align:center;line-height:44px;z-index:5;pointer-events:none;direction:rtl','קֻפַּת חוֹלִים כְּלָלִית');
+  layer('left:880px;top:40px;width:80px;height:60px;z-index:5;pointer-events:none','<svg viewBox="0 0 80 60" width="80" height="60"><rect x="0" y="0" width="5" height="60" fill="#9aa6bd"/><rect x="5" y="2" width="70" height="14" fill="#43a047"/><rect x="5" y="16" width="70" height="14" fill="#fff"/><rect x="5" y="30" width="70" height="14" fill="#1e88e5"/></svg>');
+}})();
+PL.cl_wait.doors[0].x=150;
+PL.cl_wait.left='cl_play';
+PL.cl_wait.tip='קֻפַּת חוֹלִים כְּלָלִית! לוֹקְחִים מִסְפָּר בַּמְּכוֹנָה וּמְצַלְצְלִים בַּפַּעֲמוֹן. הַחֵץ יָמִינָה מוֹבִיל לַחֶדֶר שֶׁל הָאָחוֹת, וְהַחֵץ שְׂמֹאלָה לְפִנַּת הַמִּשְׂחָקִים.';
+/* מיטת בדיקה: שוכבים עליה, וגוררים כדי לקום */
+(function(){var _bg=PL.cl_room.bg;PL.cl_room.bg=function(id){_bg(id);
+  PL.cl_room.features[0]={r:rect(380,250,280,200),accept:function(o){return o.k==='p'||o.k==='dog'},drop:function(o,el){o.sleep=true;snap(o,el,500,o.k==='p'?300:310);sfx.pop();later(function(){say(rnd(['שׁוֹכְבִים עַל מִטַּת הַבְּדִיקָה. עַכְשָׁו בּוֹדְקִים!','נוֹחַ? מַתְחִילִים בְּדִיקָה']))},200)}}}})();
+PL.cl_room.tip='חֲדַר הַטִּפּוּלִים! מַשְׁכִּיבִים מִישֶׁהוּ עַל הַמִּטָּה, וְגוֹרְרִים עָלָיו כְּלִים. כְּדֵי לָקוּם — גּוֹרְרִים אוֹתוֹ מֵהַמִּטָּה אוֹ נוֹגְעִים בּוֹ.';
+(function(){var _tap=tapObj;tapObj=function(o,el,p){
+  if(CUR_PLACE==='cl_room'&&o.k==='p'&&o.sleep){clearState(o);o.x=Math.max(110,o.x-170);o.y=Math.round(footY(o,515));el.style.transition='left .3s,top .3s';el.style.left=o.x+'px';el.style.top=o.y+'px';setTimeout(function(){el.style.transition=''},320);el.style.zIndex=o.y+100;applyState(o,el);wsave();anim(el,'jump');sfx.boing();say('הַבְּדִיקָה נִגְמְרָה! אֶפְשָׁר לָקוּם');return}
+  return _tap(o,el,p)}})();
+/* גרירה מהמיטה לכל מקום אחר — קמים (לא נשארים שוכבים) */
+(function(){var _drop=dropObj;dropObj=function(o,el,p){var was=CUR_PLACE==='cl_room'&&o.sleep;_drop(o,el,p);
+  if(was&&o.sleep&&el.isConnected&&o.place==='cl_room'&&!inR({x:o.x,y:o.y},rect(380,250,280,200),12)){clearState(o);o.y=o.k==='p'?Math.round(footY(o,515)):485;el.style.top=o.y+'px';applyState(o,el);wsave()}}})();
+
+/* ---- פינת המשחקים ---- */
+var SHAPES=[['עִגּוּל','#ff5c6c','<circle cx="50" cy="50" r="40"/>'],['רִבּוּעַ','#4fb3ff','<rect x="12" y="12" width="76" height="76" rx="6"/>'],['מְשֻׁלָּשׁ','#ffd23f','<path d="M50 8 L94 88 H6 Z"/>'],['כּוֹכָב','#b07bff','<path d="M50 6 L61 38 H95 L67 58 L78 92 L50 71 L22 92 L33 58 L5 38 H39 Z"/>'],['לֵב','#ff8fb1','<path d="M50 90 C10 60 4 34 22 20 C36 10 48 18 50 28 C52 18 64 10 78 20 C96 34 90 60 50 90 Z"/>'],['מְתֻמָּן','#6cd07a','<path d="M32 8 H68 L92 32 V68 L68 92 H32 L8 68 V32 Z"/>']];
+function shapeSVG(i,sz,hole){var s=SHAPES[i];return '<svg viewBox="0 0 100 100" width="'+sz+'" height="'+sz+'" style="display:block"><g fill="'+(hole?'#3b2a1a':s[1])+'" stroke="'+(hole?'#2a1d10':'rgba(0,0,0,.25)')+'" stroke-width="4">'+s[2]+'</g></svg>'}
+var COLN={'#ff5c6c':'אָדֹם','#4fb3ff':'כָּחֹל','#ffd23f':'צָהֹב','#b07bff':'סָגֹל','#ff8fb1':'וָרֹד','#6cd07a':'יָרֹק'};
+defPlace('cl_play',{music:'park',floor:530,right:'cl_wait',tip:'פִּנַּת הַמִּשְׂחָקִים! מַכְנִיסִים כָּל צוּרָה לַחוֹר שֶׁלָּהּ, מְנַגְּנִים בַּקְּסִילוֹפוֹן, וְנוֹגְעִים בִּמְכוֹנַת הַבּוּעוֹת.',
+  bg:function(id){
+    layer('height:430px;background:linear-gradient(#fff4d6,#ffe9b8)');layer('top:430px;background:repeating-conic-gradient(#ffb3c7 0 25%,#b3e5ff 0 50%) 0 0/90px 90px');
+    layer('left:560px;top:40px;width:400px;height:50px;pointer-events:none;font-size:34px;letter-spacing:22px;text-align:center','🎈🧸🪁🎨🧩🎈');
+    windowEl(300,80,170,110);
+    /* לוח צורות */
+    var BX=520,BY=110,done=0,holes=[];
+    layer('left:'+BX+'px;top:'+BY+'px;width:420px;height:270px;border-radius:22px;background:#c98b52;border:8px solid #a0683a;z-index:3;pointer-events:none');
+    var order=[0,1,2,3,4,5].sort(function(){return Math.random()-.5});
+    order.forEach(function(si,k){var hx=BX+75+(k%3)*135,hy=BY+70+Math.floor(k/3)*130;holes.push({x:hx,y:hy,s:si,filled:false});
+      layer('left:'+(hx-45)+'px;top:'+(hy-45)+'px;width:90px;height:90px;z-index:4;pointer-events:none',shapeSVG(si,90,true))});
+    function spawn(){done=0;holes.forEach(function(h){h.filled=false});[].slice.call(sceneEl.querySelectorAll('.shp')).forEach(function(e){e.remove()});
+      var xs=[470,560,650,740,830,920].sort(function(){return Math.random()-.5});
+      SHAPES.forEach(function(s,i){var t=thing(shapeSVG(i,82),xs[i],470+Math.round(Math.random()*70),{onDrop:function(e,p){
+          var h=holes.filter(function(h){return !h.filled&&dist(p,h)<70})[0];
+          if(h&&h.s===i){h.filled=true;e.style.left=h.x+'px';e.style.top=h.y+'px';e._opts.fixed=true;e.style.pointerEvents='none';e.style.zIndex=5;sfx.chime();fx(h.x,h.y-50,'⭐',36);say(s[0]+' '+COLN[s[1]]+'!');
+            if(++done===6){later(function(){sfx.sparkle();say('כָּל הַכָּבוֹד! כָּל הַצּוּרוֹת בִּמְקוֹמָן!');for(var q=0;q<16;q++)later(function(){fx(BX+Math.random()*420,BY+Math.random()*270,rnd(['🎉','⭐','✨','🎈']),44)},q*80)},600);later(spawn,4200)}}
+          else if(h){sfx.boing();anim(e,'shake');say('זֶה '+s[0]+'... נַסִּי חוֹר אַחֵר')}}});
+        t.classList.add('shp');t.style.zIndex=20;t.addEventListener('pointerdown',function(){if(once('shp'+i,1500))say(s[0])})})}
+    spawn();
+    /* קסילופון */
+    var NOTES=[523,587,659,698,784,880,988,1047],XC=['#ff5c6c','#ff9f43','#ffd23f','#6cd07a','#4fb3ff','#5c6cff','#b07bff','#ff8fb1'];
+    layer('left:60px;top:470px;width:380px;height:16px;border-radius:8px;background:#a0683a;z-index:6;pointer-events:none');layer('left:60px;top:550px;width:380px;height:16px;border-radius:8px;background:#a0683a;z-index:6;pointer-events:none');
+    NOTES.forEach(function(f,i){var h=110-i*8,b=layer('left:'+(72+i*46)+'px;top:'+(518-h/2)+'px;width:38px;height:'+h+'px;border-radius:8px;background:'+XC[i]+';z-index:7;cursor:pointer;box-shadow:inset 0 -6px rgba(0,0,0,.15)');
+      b.addEventListener('pointerdown',function(){ac();tone(f,.9,{type:'sine',v:.25});tone(f*2,.4,{type:'sine',v:.06});b.style.transform='scaleY(.92)';setTimeout(function(){b.style.transform=''},120);fx(72+i*46+19,518-h/2-20,'🎵',28)})});
+    /* מכונת בועות */
+    var bm=layer('left:330px;top:300px;width:110px;height:120px;z-index:8;cursor:pointer','<svg viewBox="0 0 110 120" width="110" height="120"><rect x="10" y="40" width="90" height="76" rx="14" fill="#4fb3ff" stroke="#1e7fd0" stroke-width="4"/><circle cx="55" cy="40" r="26" fill="#bfe9ff" stroke="#1e7fd0" stroke-width="4"/><circle cx="55" cy="40" r="12" fill="#fff"/><circle cx="32" cy="86" r="8" fill="#ffd23f"/><circle cx="78" cy="86" r="8" fill="#ff5c6c"/></svg>');
+    bm.addEventListener('click',function(){ac();anim(bm,'wiggle');tone(300,.4,{type:'triangle',to:600,v:.08});
+      for(var i=0;i<7;i++)(function(i){later(function(){var sz=40+Math.round(Math.random()*40),bx=385+Math.round(Math.random()*60-30);
+        var b=layer('left:'+bx+'px;top:300px;width:'+sz+'px;height:'+sz+'px;border-radius:50%;z-index:60;cursor:pointer;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.95),rgba(180,220,255,.35) 40%,rgba(255,170,230,.3));border:2px solid rgba(255,255,255,.8);transition:left 4s ease-out,top 4s ease-out');
+        requestAnimationFrame(function(){b.style.left=(bx+Math.round(Math.random()*400-200))+'px';b.style.top=(40+Math.round(Math.random()*200))+'px'});
+        b.addEventListener('pointerdown',function(e){e.stopPropagation();tone(900+Math.random()*500,.08,{type:'sine',v:.2});b.remove()});
+        later(function(){if(b.isConnected)b.remove()},6500)},i*160)})(i)});
+    lampEl(id,490);nightLayer(id,true);
+  }});
+/* עיגול בתפריט בלי צלב */
+(function(){var _m=SCENES.menu;SCENES.menu=function(){_m();[].slice.call(sceneEl.querySelectorAll('.tile')).forEach(function(d){if(d.textContent==='🏥')d.textContent='🩺'})}})();
+</script>
+
+<script>
 /* הפעלה */
 try{loadWorld();muteBtn();go('menu')}catch(e){window.__showErr&&window.__showErr('[start] '+e.message)}
 </script>
